@@ -286,7 +286,7 @@ See the pkg-config man page for more details.
 ]))
 ENABLE_GLIB=yes
 
-GTKHS_PKG_CHECK(gtk, gtk, GTK, [pango >= 1.0.0 gdk-2.0 >= 2.0.0 gdk-pixbuf-2.0 >= 0.12.0 gtk+-2.0 >= 2.0.0 gthread-2.0 >= 2.0.0], [GLIB],
+GTKHS_PKG_CHECK(gtk, gtk, GTK, [pango >= 1.0.0 gdk-2.0 >= 2.0.0 gdk-pixbuf-2.0 >= 0.12.0 gtk+-2.0 >= 2.0.0 gthread-2.0 >= 2.0.0 vte >= 0.19.5], [GLIB],
                 [build gtk and soegtk packages (default=auto)],
 AC_MSG_ERROR([
 The development files for the gtk-2.x library were not found.
