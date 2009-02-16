@@ -28,9 +28,7 @@ module Graphics.UI.Gtk.VteLite (
 
 -- * Types
   VteTerminal,
---  VteLiteClass,
---  castToVteLite,
---  toVteLite,
+  VteLiteClass,
 
 -- * Constructors
   vteLiteNew,
@@ -40,10 +38,10 @@ module Graphics.UI.Gtk.VteLite (
   vteLiteSetMouseAutoHide,
   vteLiteBeginAppOutput,
   vteLiteFinishAppOutput,
---  vteLiteFeed,
+  vteLiteFeed,
 
 -- * Signals
---  onLineReceived
+  onLineReceived
   ) where
 
 import Control.Monad	(liftM)
@@ -52,6 +50,7 @@ import Foreign.Ptr
 
 import Graphics.UI.Gtk.Abstract.Object	(makeNewObject)
 {#import Graphics.UI.Gtk.Types#}
+{#import Graphics.UI.Gtk.Signals#}
 import System.Glib.FFI
 import System.Glib.UTFString
 
@@ -95,4 +94,16 @@ vteLiteBeginAppOutput terminal =
 vteLiteFinishAppOutput terminal =
   {# call vte_terminal_finish_app_output #}
     (toVteLite terminal)
+
+vteLiteFeed terminal input =
+  withUTFString input $ \inputPtr ->
+  {# call vte_terminal_feed #}
+    (toVteLite terminal)
+    inputPtr
+    (fromIntegral (length input))
+
+onLineReceived :: VteLiteClass t => t
+  -> (String -> IO ())
+  -> IO (ConnectId t)
+onLineReceived = connect_STRING__NONE "line-received" False
 
