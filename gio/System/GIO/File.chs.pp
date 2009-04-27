@@ -158,6 +158,10 @@ fileFromParseName :: String -> File
 fileFromParseName parseName =
     unsafePerformIO $ withUTFString parseName $ \cParseName -> {# call file_parse_name #} cParseName >>= takeGObject
 
+-- | Compare two file descriptors for equality. This test is also used to
+--   implement the '(==)' function, that is, comparing two descriptions
+--   will compare their content, not the pointers to the two structures.
+--
 fileEqual :: (FileClass file1, FileClass file2)
           => file1 -> file2 -> Bool
 fileEqual file1 file2 =
@@ -654,7 +658,8 @@ fileCopy source destination flags cancellable progressCallback =
                                cProgressCallback
                                nullPtr
                                cError
-            freeHaskellFunPtr cProgressCallback
+            when (cProgressCallback /= nullFunPtr) $
+              freeHaskellFunPtr cProgressCallback
             return $ toBool ret
     where _ = {# call file_copy #}
 
@@ -673,7 +678,8 @@ fileCopyAsync source destination flags ioPriority cancellable progressCallback c
         maybeWith withGObject cancellable $ \cCancellable -> do
           cProgressCallback <- maybe (return nullFunPtr) marshalFileProgressCallback progressCallback
           cCallback <- marshalAsyncReadyCallback $ \sourceObject res -> do
-                         freeHaskellFunPtr cProgressCallback
+                         when (cProgressCallback /= nullFunPtr) $
+                           freeHaskellFunPtr cProgressCallback
                          callback sourceObject res
           g_file_copy_async cSource
                             cDestination
@@ -713,7 +719,8 @@ fileMove source destination flags cancellable progressCallback =
                                cProgressCallback
                                nullPtr
                                cError
-            freeHaskellFunPtr cProgressCallback
+            when (cProgressCallback /= nullFunPtr) $
+              freeHaskellFunPtr cProgressCallback
             return $ toBool ret
     where _ = {# call file_move #}
 

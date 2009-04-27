@@ -2850,7 +2850,9 @@ docs/reference/stamp : $(htmldoc_HSFILES)
 		--prologue=docs/prologue.txt \
 	        $(addprefix --read-interface=, $(htmldoc_haddock_interfaces)) \
 		$(addprefix --optghc=,$(sort $(foreach PACKAGE, $(PACKAGES), $(libHS$(PACKAGE)_a_HCFLAGS) $(libHS$(PACKAGE)_a_CPPFLAGS))) \
-		                      $(sort $(foreach HSFILE, $(htmldoc_HSFILES_AM), $($(HSFILE)_HCFLAGS)))) \
+		                      $(sort $(foreach HSFILE, $(htmldoc_HSFILES_AM), $($(HSFILE)_HCFLAGS))) \
+		                      $(HIDE_ALL_PACKAGES)) \
+		$(foreach DEP,$(sort $(foreach PACKAGE, $(PACKAGES),$(libHS$(PACKAGE)_a_EXTERNALDEPS))),--optghc='-package $(DEP)') \
 		$(HADDOCK_FLAGS) $^)
 	touch docs/reference/stamp
 CLEANFILES+=docs/reference/stamp
@@ -3072,7 +3074,7 @@ install-data-hook :
 	update $(DESTDIR)$(pkglibdir)/$(patsubst libHS%.a,%.package.conf,$(pkgname));)
 
 uninstall-hook :
-	$(foreach pkgname,$(pkglib_LIBRARIES), \
+	$(foreach pkgname,$(call reverse,$(pkglib_LIBRARIES)), \
 	  $(GHCPKG) $(addprefix --package-conf=,$(PKGCONF)) $(if $(USERPKGCONF),--user) \
 	  unregister $(patsubst libHS%.a,%,$(pkgname))-$(PACKAGE_VERSION);) \
 	$(if $(PKGCONF),if test -f $(PKGCONF); then \
