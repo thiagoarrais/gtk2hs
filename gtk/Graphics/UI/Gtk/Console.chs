@@ -38,6 +38,7 @@ module Graphics.UI.Gtk.Console (
   consoleSetMouseAutoHide,
   consoleBeginAppOutput,
   consoleFinishAppOutput,
+  consoleSetCommandPrompt,
   consoleFeed,
 
 -- * Signals
@@ -94,6 +95,12 @@ consoleBeginAppOutput terminal =
 consoleFinishAppOutput terminal =
   {# call console_console_finish_app_output #}
     (toConsole terminal)
+
+consoleSetCommandPrompt terminal text =
+  withUTFString text $ \textPtr ->
+  {# call console_console_set_command_prompt #}
+    (toConsole terminal)
+    textPtr
 
 consoleFeed terminal input =
   withUTFString input $ \inputPtr ->
