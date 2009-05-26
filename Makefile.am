@@ -624,6 +624,7 @@ libHSgtk_a_SOURCES =					 		\
 	gtk/Graphics/UI/Gtk/Abstract/ButtonBox.chs.pp			\
 	gtk/Graphics/UI/Gtk/Abstract/Container.chs.pp			\
 	gtk/Graphics/UI/Gtk/Abstract/ContainerChildProperties.chs	\
+	gtk/Graphics/UI/Gtk/Abstract/IMContext.chs			\
 	gtk/Graphics/UI/Gtk/Abstract/Misc.chs				\
 	gtk/Graphics/UI/Gtk/Abstract/Object.chs.pp			\
 	gtk/Graphics/UI/Gtk/Abstract/Paned.chs.pp			\
@@ -699,6 +700,7 @@ libHSgtk_a_SOURCES =					 		\
 	gtk/Graphics/UI/Gtk/Misc/EventBox.chs.pp			\
 	gtk/Graphics/UI/Gtk/Misc/Arrow.chs				\
 	gtk/Graphics/UI/Gtk/Misc/HandleBox.chs				\
+	gtk/Graphics/UI/Gtk/Misc/IMMulticontext.chs.pp			\
 	gtk/Graphics/UI/Gtk/Misc/SizeGroup.chs.pp			\
 	gtk/Graphics/UI/Gtk/Misc/Tooltips.chs.pp			\
 	gtk/Graphics/UI/Gtk/Misc/Viewport.chs				\
@@ -3021,12 +3023,12 @@ install-exec-hook:
 	$(SED)	-e 's|$${pkglibdir}|$(pkglibdir)|g' \
 		-e 's|$${modules}|$(call getModules,$(pkgname))|' \
 		$(call getVar,$(pkgname),CONFIG) \
-	> $(DESTDIR)/$(pkglibdir)/$(notdir $(call getVar,$(pkgname),CONFIG)).tmp; \
-	mv $(DESTDIR)/$(pkglibdir)/$(notdir $(call getVar,$(pkgname),CONFIG)){.tmp,} ; \
+	> $(DESTDIR)$(pkglibdir)/$(notdir $(call getVar,$(pkgname),CONFIG)).tmp; \
+	mv $(DESTDIR)$(pkglibdir)/$(notdir $(call getVar,$(pkgname),CONFIG)){.tmp,} ; \
 	$(SED)	's|$${modules}|$(call getModules,$(pkgname))|' \
 		$(patsubst %.package.conf,%.cabal,$(call getVar,$(pkgname),CONFIG)) \
-	> $(DESTDIR)/$(pkglibdir)/$(notdir $(patsubst %.package.conf,%.cabal,$(call getVar,$(pkgname),CONFIG))).tmp; \
-	mv $(DESTDIR)/$(pkglibdir)/$(notdir $(patsubst %.package.conf,%.cabal,$(call getVar,$(pkgname),CONFIG))){.tmp,};)
+	> $(DESTDIR)$(pkglibdir)/$(notdir $(patsubst %.package.conf,%.cabal,$(call getVar,$(pkgname),CONFIG))).tmp; \
+	mv $(DESTDIR)$(pkglibdir)/$(notdir $(patsubst %.package.conf,%.cabal,$(call getVar,$(pkgname),CONFIG))){.tmp,};)
 
 else WIN32_INSTALLER
 # Except on Windows if we're makeing an installer where we delay the variable
@@ -3043,7 +3045,7 @@ else WIN32_INSTALLER
 install-exec-hook:
 	$(foreach pkgname,$(pkglib_LIBRARIES), \
 	$(SHELL) mk/fix-package-conf.sh \
-	         $(DESTDIR)/$(pkglibdir)/$(notdir $(call getVar,$(pkgname),CONFIG)) \
+	         $(DESTDIR)$(pkglibdir)/$(notdir $(call getVar,$(pkgname),CONFIG)) \
 	         "$(call getModules,$(pkgname))" && \
 	) true
 
