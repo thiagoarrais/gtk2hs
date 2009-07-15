@@ -42,7 +42,7 @@ module Graphics.UI.Gtk.Console (
   consoleFeed,
 
 -- * Signals
-  onLineReceived
+  lineReceived
   ) where
 
 import Control.Monad	(liftM)
@@ -109,8 +109,6 @@ consoleFeed terminal input =
     inputPtr
     (fromIntegral (length input))
 
-onLineReceived :: ConsoleClass t => t
-  -> (String -> IO ())
-  -> IO (ConnectId t)
-onLineReceived = connect_STRING__NONE "line-received" False
+lineReceived :: ConsoleClass self => Signal self (String -> IO ())
+lineReceived = Signal (connect_STRING__NONE "line-received")
 
